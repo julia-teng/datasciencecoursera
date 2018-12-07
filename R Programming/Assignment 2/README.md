@@ -75,3 +75,5 @@ A valid submission will look something like (this is just an example!)
 ````R
 https://github.com/rdpeng/ProgrammingAssignment2
 ````
+
+https://www.coursera.org/learn/r-programming/peer/tNy8H/programming-assignment-2-lexical-scoping
