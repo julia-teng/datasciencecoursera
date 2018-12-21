@@ -84,4 +84,25 @@ rankhospital <- function(state, outcome, num = "best") {
   ## Return hospital name in that state with the given rank
   ## 30-day death rate
 }
+
+## Part 4 Ranking hospitals in all states
+
+rankall <- function(outcome, num = "best") {
+  ## Read outcome data
+  outtable <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
+  data <- as.data.frame(cbind(outtable[,2], # Hospital
+                              outtable[,7], # State
+                              outtable[,11], # Heart Attack
+                              outtable[,17], # Heart Failure
+                              outtable[,23]), # Pneumonia
+                        stringsAsFactors = FALSE
+  )
+  colnames(data)<-c("Hospital","State","heart attack","heart failure","pneumonia")
+  
+  ## Check that state and outcome are valid
+  ## For each state, find the hospital of the given rank
+  ## Return a data frame with the hospital names and the
+  ## (abbreviated) state name
+}
+
     
