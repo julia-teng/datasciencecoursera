@@ -67,7 +67,7 @@ rankhospital <- function(state, outcome, num = "best") {
       StateData<-data[isState,]
       # get outcome value
       StateData[,eval(outcome)]<-as.numeric(StateData[,eval(outcome)])
-      result<-StateData[order(StateData[,eval(outcome)],StateData[,"Hospital"],decreasing = TRUE),]
+      StateData<-StateData[order(StateData[,eval(outcome)],StateData[,"Hospital"],decreasing = TRUE),]
       rank <- StateData[, "Hospital"][1]
     }else{
      stop('invalid rank')
@@ -77,17 +77,14 @@ rankhospital <- function(state, outcome, num = "best") {
      StateData<-data[isState,]
      # get outcome value
      StateData[,eval(outcome)]<-as.numeric(StateData[,eval(outcome)])
-     result<-StateData[order(StateData[,eval(outcome)],StateData[,"Hospital"],decreasing = FALSE),]
+     StateData<-StateData[order(StateData[,eval(outcome)],StateData[,"Hospital"]),]
      rank <- StateData[, "Hospital"][num]
   }
   rank
-  ## Return hospital name in that state with the given rank
-  ## 30-day death rate
 }
 
 ## Part 4 Ranking hospitals in all states
-
-rankall <- function(outcome, num = "best") {
+rankall <- function(outcome, num = "best"){
   ## Read outcome data
   outtable <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
   data <- as.data.frame(cbind(outtable[,2], # Hospital
@@ -98,11 +95,31 @@ rankall <- function(outcome, num = "best") {
                         stringsAsFactors = FALSE
   )
   colnames(data)<-c("Hospital","State","heart attack","heart failure","pneumonia")
+  allState<-unique(data$State)
   
-  ## Check that state and outcome are valid
-  ## For each state, find the hospital of the given rank
-  ## Return a data frame with the hospital names and the
-  ## (abbreviated) state name
+  if (!outcome %in% c("heart attack","heart failure","pneumonia")){
+    stop('invalid outcome')
+  }else if(is.numeric(num)==FALSE){
+    if(num=="best"){
+      allState<-unique(data$State)
+      ordered<-c()
+        
+      for (i in seq_along(allState)){
+        allState[[i]] <- allState[[i]][order(allState[[i]][, eval(outcome)], 
+                                             allState[[i]][, "Hospital"]), ]
+        ordered[[i]]  <- c(allState[[i]][1, c("Hospital", "State")])
+      }
+      result <-do.call(rbind,ordered)
+      rank<-as.data.frame(result,stringsAsFactors=FALSE)
+      rownames(rank)<-rank[,2]
+    }else if(num=="worst"){
+      stop('invalid rank')
+    }else{
+      stop('invalid rank')
+    }
+  }else if (is.numeric(num)==TRUE){
+    stop('invalid rank')
+  }
+  rank
+  
 }
-
-    
